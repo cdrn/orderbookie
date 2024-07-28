@@ -15,6 +15,7 @@ func (pq OrderQueue) Swap(i, j int) { pq[i], pq[j] = pq[j], pq[i] }
 func (pq *OrderQueue) Push(x interface{}) {
 	order := x.(*Order)
 	*pq = append(*pq, order)
+	heap.Fix(pq, pq.Len()-1) // Ensure the heap property is maintained
 }
 
 func (pq *OrderQueue) Pop() interface{} {

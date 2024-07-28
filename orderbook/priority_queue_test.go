@@ -6,50 +6,80 @@ import (
 )
 
 func TestOrderQueue(t *testing.T) {
-	// Create a new order queue
 	pq := NewOrderQueue()
 
-	// Define some test orders
-	order1 := &Order{Price: 100}
-	order2 := &Order{Price: 200}
-	order3 := &Order{Price: 150}
-
-	// Push orders onto the queue
-	heap.Push(pq, order1)
-	heap.Push(pq, order2)
-	heap.Push(pq, order3)
-
-	// Test the length of the queue
-	if pq.Len() != 3 {
-		t.Errorf("expected length 3, got %d", pq.Len())
+	// Add 5 orders
+	orders := []*Order{
+		{Price: 5},
+		{Price: 3},
+		{Price: 8},
+		{Price: 1},
+		{Price: 7},
 	}
 
-	// Test the order of elements (highest price first)
-	expectedOrder := []*Order{order2, order3, order1}
-	for i, expected := range expectedOrder {
-		if (*pq)[i] != expected {
-			t.Errorf("expected order %v at index %d, got %v", expected, i, (*pq)[i])
+	for _, order := range orders {
+		heap.Push(pq, order)
+	}
+
+	// Check the order of elements in the priority queue
+	expectedOrder := []int{1, 3, 5, 7, 8}
+	for i, expectedPrice := range expectedOrder {
+		order := heap.Pop(pq).(*Order)
+		if order.Price != float64(expectedPrice) {
+			t.Errorf("Expected order at index %d to have price %f, but got %f", i, float64(expectedPrice), order.Price)
 		}
 	}
+}
 
-	// Pop elements and test the order
-	poppedOrder := heap.Pop(pq).(*Order)
-	if poppedOrder != order2 {
-		t.Errorf("expected order2, got %v", poppedOrder)
+func TestOrderQueueWithAdditionalOrders(t *testing.T) {
+	pq := NewOrderQueue()
+
+	// Add 5 orders
+	orders := []*Order{
+		{Price: 10},
+		{Price: 2},
+		{Price: 6},
+		{Price: 4},
+		{Price: 9},
 	}
 
-	poppedOrder = heap.Pop(pq).(*Order)
-	if poppedOrder != order3 {
-		t.Errorf("expected order3, got %v", poppedOrder)
+	for _, order := range orders {
+		heap.Push(pq, order)
 	}
 
-	poppedOrder = heap.Pop(pq).(*Order)
-	if poppedOrder != order1 {
-		t.Errorf("expected order1, got %v", poppedOrder)
+	// Check the order of elements in the priority queue
+	expectedOrder := []int{2, 4, 6, 9, 10}
+	for i, expectedPrice := range expectedOrder {
+		order := heap.Pop(pq).(*Order)
+		if order.Price != float64(expectedPrice) {
+			t.Errorf("Expected order at index %d to have price %f, but got %f", i, float64(expectedPrice), order.Price)
+		}
+	}
+}
+
+func TestOrderQueueMixedOrders(t *testing.T) {
+	pq := NewOrderQueue()
+
+	// Add 5 orders
+	orders := []*Order{
+		{Price: 15},
+		{Price: 3},
+		{Price: 12},
+		{Price: 1},
+		{Price: 5},
 	}
 
-	// Test the length of the queue after popping all elements
-	if pq.Len() != 0 {
-		t.Errorf("expected length 0, got %d", pq.Len())
+	for _, order := range orders {
+		heap.Push(pq, order)
+	}
+
+	// Check the order of elements in the priority queue
+	expectedOrder := []int{1, 3, 5, 12, 15}
+	for i, expectedPrice := range expectedOrder {
+		order := heap.Pop(pq).(*Order)
+		if order.Price != float64(expectedPrice) {
+			t.Errorf("Expected order at index %d to have price %f, but got %f", i, float64(expectedPrice), order.Price)
+			return
+		}
 	}
 }
